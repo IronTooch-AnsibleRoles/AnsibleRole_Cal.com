@@ -1,0 +1,25 @@
+---
+# Items for Default Installation
+cal_name: "cal"
+cal_version: "1.2.14"
+cal_repo: "ppa:{{ cal_name }}/{{ cal_version }}"
+cal_gpg_key: "http://path_to_key"
+cal_gpg_keyring: "{{ cal_name }}_keyring"
+cal_sources_file: "/etc/apt/sources.list.d/{{ cal_name }}.list"
+cal_url: "https://github.com/calcom/cal.com.git"
+cal_service_usesr: "{{ cal_name }}_user"
+cal_dir: "/opt/cal"
+
+cal_node_ver: 16
+cal_prisma_dir: "{{ cal_dir }}/packages/prisma"
+
+# Items for provisioning the Service
+cal_inital_cert_location: "/etc/step-ca"
+cal_dependent_service: ""
+cal_external_domain: "cal.example.com"
+cal_initial_certificate_path: "{{ cal_inital_cert_location }}/{{ external_domain }}.crt"
+cal_initial_key_path: "{{ cal_inital_cert_location }}/{{ external_domain }}.key"
+cal_certificate_path: "/etc/cal/certificate.crt"
+cal_key_path: "/etc/cal/certificate.key"
+cal_cert_renewer_path: "/etc/systemd/system/cert-renewer@{{ cal_dependent_service }}.service.d"
+cal_cert_timer: cert-renewer@{{ cal_dependent_service }}.timer""

@@ -1,0 +1,24 @@
+---
+- name: Edit cal file already deployed
+  ansible.builtin.replace:
+    path: "{{ cal_installed_config_file }}"
+    regexp: "TEXT_TO_FIND"
+    replace: "TEXT_TO_ADD"
+    owner: "{{ cal_service_user }}"
+    group: "{{ cal_service_user }}"
+    mode: '0700'
+
+- name: Deploy fresh app config file
+  ansible.builtin.template:
+    src: "{{ cal_deployed_config_file }}"
+    dest: "{{ cal_dir }}/CONFIG_PATH"
+    force: true
+    mode: '0700'  # Ansible-Lint hates when this isn't set
+
+- name: Own all of the cal folder
+  ansible.builtin.file:
+    path: "{{ cal_dir }}"
+    state: directory
+    recurse: true
+    owner: '{{ cal_service_user }}'
+    group: '{{ cal_service_user }}'

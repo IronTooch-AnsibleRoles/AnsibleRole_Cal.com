@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cp {{ cal_inital_cert_location }}/{{ external_domain }}.crt {{ cal_certificate_path }}
+cp {{ cal_inital_cert_location }}/{{ external_domain }}.key {{ cal_key_path }}
+chmod 0640 {{ cal_certificate_path }}
+chmod 0640 {{ cal_key_path }}
+chown {{ cal_service_user }}:{{ cal_service_user }} {{ cal_certificate_path }}
+chown {{ cal_service_user }}:{{ cal_service_user }} {{ cal_key_path }}

@@ -1,0 +1,14 @@
+#
+# Note: After making changes to this file you need to run the `rebuild` or `update`
+# command for them to be applied.
+
+url: https://{{ cal_external_domain }}
+http_port: 80
+https_port: 443
+ssl_certificate_path: {{ cal_certificate_path }}
+ssl_key_path: {{ cal_key_path }}}
+
+yaml_list:
+{% for internal_yaml_item in cal_list_data %}
+  - {{ internal_yaml_item }}
+{% endfor %}

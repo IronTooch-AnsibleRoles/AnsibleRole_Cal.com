@@ -1,0 +1,60 @@
+---
+# - name: Create cal directory
+#   ansible.builtin.file:
+#     path: "{{ cal_dir }}"
+#     state: directory
+#     owner: "{{ cal_service_user }}"
+#     group: "{{ cal_service_user }}"
+#     mode: '700'
+
+# - name: Get Installer
+#   ansible.builtin.get_url:
+#     url: "{{ cal_url }}"
+#     dest: "{{ cal_dir }}/{{ cal_install_program }}"
+#     force: true
+#     owner: "{{ cal_service_user }}"
+#     group: "{{ cal_service_user }}"
+#     mode: "0700"
+#     validate_certs: "true"
+
+- name: Get Cal.Com Repo
+  ansible.builtin.git:
+    repo: "{{ cal_url }}"
+    dest: "{{ cal_dir }}"
+    force: true
+
+- name: Make Encryption key
+  ansible.builtin.set_fact:
+    cal_enc_key: "{{ lookup('community.general.random_string', length=24, special=false) }}"
+
+- name: Template out web/.env
+  ansible.builtin.template:
+    src: cal.env.j2
+    dest: "{{ cal_dir }}/apps/web/.env"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Template out prisma/.env
+  ansible.builtin.template:
+    src: prisma.env.j2
+    dest: "{{ cal_dir }}/packages/prisma/.env"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Run Yarn to install packages
+  ansible.builtin.command:
+    cmd: "yarn"
+    chdir: "{{ cal_dir }}"
+    creates: "/opt/cal/node_modules/send/index.js"
+
+- name: Run Yarn to install packages
+  ansible.builtin.command:
+    cmd: "npx prisma migrate deploy"
+    chdir: "{{ cal_prisma_dir }}"
+
+- name: Run Yarn to install packages
+  ansible.builtin.command:
+    cmd: "yarn run build --scope=@calcom/web"
+    chdir: "{{ cal_dir }}"
+
+# yarn run start --scope=@calcom/web

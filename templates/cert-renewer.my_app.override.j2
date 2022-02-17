@@ -1,0 +1,9 @@
+[Service]
+ExecStartPost=cp {{ cal_initial_certificate_path }} {{ cal_certificate_path }}
+ExecStartPost=cp {{ cal_initial_key_path }} {{ cal_key_path }}
+ExecStartPost=chmod 0640 {{ cal_certificate_path }}
+ExecStartPost=chmod 0640 {{ cal_key_path }}
+ExecStartPost=chown {{ service_user }}:{{ service_user }} {{ cal_certificate_path }}
+ExecStartPost=chown {{ service_user }}:{{ service_user }} {{ cal_key_path }}
+ExecStartPost={{ cal_refresh_command }}
+ExecStartPost=/usr/bin/env sh -c "! systemctl --quiet is-enabled %i.service || systemctl try-reload-or-restart %i"

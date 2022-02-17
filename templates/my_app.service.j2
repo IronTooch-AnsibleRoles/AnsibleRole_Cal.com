@@ -1,0 +1,15 @@
+[Unit]
+Description={{ cal_name | upper }}
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+User={{ cal_service_user }}
+Group={{ cal_service_user }}
+ExecStart={{ cal_start_command }}
+ExecStop={{ cal_stop_command }}
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

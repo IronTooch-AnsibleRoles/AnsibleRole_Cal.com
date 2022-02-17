@@ -1,0 +1,44 @@
+---
+- name: Install Dependency packages
+  package:
+    name:
+      - acl
+      - sudo
+      - python3-pexpect
+    state: present
+
+- name: Install Nodesource Key
+  ansible.builtin.apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+    validate_certs: true
+    keyring: "/etc/apt/trusted.gpg.d/nodesource.gpg"
+
+- name: "Install Nodesource Repo for Node {{ cal_node_ver }}"
+  ansible.builtin.apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ cal_node_ver }}.x focal main"
+    state: present
+    update_cache: true
+    validate_certs: true
+
+- name: Install Yarn Key
+  ansible.builtin.apt_key:
+    url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
+    state: present
+    validate_certs: true
+    keyring: "/etc/apt/trusted.gpg.d/yarn.gpg"
+
+- name: Install Yarn Repo
+  ansible.builtin.apt_repository:
+    repo: "deb https://dl.yarnpkg.com/debian/ stable main"
+    state: present
+    update_cache: true
+    validate_certs: true
+
+- name: Install Node and Yarn
+  package:
+    name:
+      - nodejs
+      - yarn
+    state: present
+    update_cache: true
